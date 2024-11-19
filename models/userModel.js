@@ -28,3 +28,16 @@ export const createUser = async (userData) => {
     return result.insertId // Retorna o ID do usuário criado
 }
 
+export const login = async (userData) => {
+    const {username, passw} = userData
+
+    const salt = await bcrypt.genSalt(10)
+    const hashedPassword = await bcrypt.hash(passw, salt)
+
+    const query = "SELECT nm_user, cd_password FROM tb_user WHERE nm_user = ? AND cd_password = ?"
+
+    const [result] = await db.query(query, [username, hashedPassword])
+
+    return result[0];
+}
+
