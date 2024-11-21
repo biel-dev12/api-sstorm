@@ -29,15 +29,23 @@ export const createUser = async (userData) => {
 }
 
 export const login = async (userData) => {
-    const {username, passw} = userData
+    const { username, passw } = userData;
 
-    const salt = await bcrypt.genSalt(10)
-    const hashedPassword = await bcrypt.hash(passw, salt)
-
-    const query = "SELECT nm_user, cd_password FROM tb_user WHERE nm_user = ? AND cd_password = ?"
-
-    const [result] = await db.query(query, [username, hashedPassword])
-
-    return result[0];
+    const query = "SELECT nm_username, cd_password FROM tb_user WHERE nm_username = ?";
+    const [rows] = await db.query(query, [username]);
+  
+    if (rows.length === 0) {
+      throw new Error("Usuário não encontrado");
+    }
+  
+    const user = rows[0];
+  
+    const isPasswordValid = await bcrypt.compare(passw, user.cd_password);
+  
+    if (!isPasswordValid) {
+      throw new Error("Senha inválida");
+    }
+  
+    return { username: user.nm_username };
 }
 

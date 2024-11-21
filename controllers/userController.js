@@ -55,15 +55,15 @@ export const loginCt = async (req, res) => {
   const userData = req.body;
 
   if (!userData.username || !userData.passw) {
-    return res
-      .status(400)
-      .json({ error: "Por favor, preencha todos os campos." });
+    return res.status(400).json({ error: "Por favor, preencha todos os campos." });
   }
 
   try {
-    const loginRes = login(userData);
-    res.status(200).json(loginRes);
+    const user = await login(userData);
+    res.status(200).json({ message: "Login realizado com sucesso", user });
   } catch (error) {
-    res.status(500).send("Erro no servidor");
+    const statusCode = error.message === "Usuário não encontrado" || error.message === "Senha inválida" ? 401 : 500;
+    res.status(statusCode).json({ error: error.message });
   }
 };
+
