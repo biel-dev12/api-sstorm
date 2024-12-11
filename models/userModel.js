@@ -31,7 +31,7 @@ export const createUser = async (userData) => {
 export const login = async (userData) => {
     const { username, passw } = userData;
 
-    const query = "SELECT nm_username, cd_password FROM tb_user WHERE nm_username = ?";
+    const query = "SELECT * FROM tb_user WHERE nm_username = ?";
     const [rows] = await db.query(query, [username]);
   
     if (rows.length === 0) {
@@ -46,6 +46,6 @@ export const login = async (userData) => {
       throw new Error("Senha inválida");
     }
   
-    return { username: user.nm_username };
+    return { id_user: user.id_user, username: user.nm_username };
 }
 
