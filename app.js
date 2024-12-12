@@ -2,6 +2,7 @@ import express from 'express'
 import userRoutes from './routes/userRoutes.js'
 import deptRoutes from './routes/deptRoutes.js'
 import segmentRoutes from './routes/segmentRoutes.js'
+import companyRoutes from './routes/companyRoutes.js'
 import cors from 'cors'
 
 const PORT = 3000
@@ -15,5 +16,6 @@ app.use(express.json())
 app.use("/", userRoutes)
 app.use("/", deptRoutes)
 app.use("/", segmentRoutes)
+app.use("/", companyRoutes)
 
 app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`))
