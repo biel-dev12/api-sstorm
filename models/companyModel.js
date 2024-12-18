@@ -7,7 +7,7 @@ export const findByField = async (field, value) => {
 };
 
 export const createCompany = async (companyData) => {
-  const { compCond, fantasyName, cnpj, segment, monthValidity, userId } =
+  const { compCond, fantasyName, cnpj, segment, city, monthValidity, userId } =
     companyData;
   const dtRegistered = new Date().toISOString().slice(0, 19).replace("T", " ");
 
@@ -30,14 +30,15 @@ export const createCompany = async (companyData) => {
     }
 
     const [result] = await db.query(
-      `INSERT INTO tb_company (nm_comp_name, cd_cnpj, dt_registered, cd_id_user, cd_id_segment, cd_comp_or_cond, ds_month_validity) 
-      VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO tb_company (nm_comp_name, cd_cnpj, dt_registered, cd_id_user, cd_id_segment, cd_id_city, cd_comp_or_cond, ds_month_validity) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         fantasyName,
         cnpj,
         dtRegistered,
         userId,
         segment,
+        city,
         compCondId,
         monthValidity,
       ]
@@ -49,7 +50,7 @@ export const createCompany = async (companyData) => {
 };
 
 export const updateCompany = async (companyId, companyData) => {
-  const { compCond, fantasyName, cnpj, segment, monthValidity, userId } =
+  const { compCond, fantasyName, cnpj, segment, city, monthValidity, userId } =
     companyData;
 
   try {
@@ -88,6 +89,7 @@ export const updateCompany = async (companyId, companyData) => {
         cd_cnpj = ?, 
         cd_id_user = ?, 
         cd_id_segment = ?, 
+        cd_id_city = ?,
         cd_comp_or_cond = (SELECT id_comp_or_cond FROM tb_comp_or_cond WHERE nm_comp_or_cond = ?), 
         ds_month_validity = ? 
       WHERE id_company = ?
@@ -98,6 +100,7 @@ export const updateCompany = async (companyId, companyData) => {
       cnpj,
       userId,
       segment,
+      city,
       compCond,
       monthValidity,
       companyId,
@@ -108,3 +111,34 @@ export const updateCompany = async (companyId, companyData) => {
     throw new Error(`Erro ao atualizar empresa: ${error.message}`);
   }
 };
+
+export const deleteCompany = async (companyId) => {
+  const query = "DELETE FROM tb_company WHERE id_company = ?"
+
+  try {
+    const [result] = await db.query(query, [companyId]);
+    return result.affectedRows;
+  } catch (error) {
+    throw new Error("Erro ao deletar empresa.");
+  }
+}
+
+export const compByMonth = async (month) => {
+  const query = `SELECT 
+      c.id_company, 
+      c.nm_comp_name, 
+      c.cd_cnpj, 
+      ci.sg_city, 
+      s.nm_segment, 
+      ec.nm_comp_or_cond,
+      c.ds_month_validity 
+    FROM tb_company c
+    JOIN tb_city ci ON c.cd_id_city = ci.id_city
+    JOIN tb_segment s ON c.cd_id_segment = s.id_segment
+    JOIN tb_comp_or_cond ec ON c.cd_comp_or_cond = ec.id_comp_or_cond
+    WHERE c.ds_month_validity = ?`
+
+  const [rows] = await db.query(query, [month])
+
+  return rows
+}
