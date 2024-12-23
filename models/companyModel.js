@@ -112,8 +112,31 @@ export const updateCompany = async (companyId, companyData) => {
   }
 };
 
+export const updateCompanyTab = async (id, updates) => {
+  const fields = Object.keys(updates);
+  const values = Object.values(updates);
+
+  const setClause = fields.map((field) => `${field} = ?`).join(", ");
+  const query = `UPDATE tb_company SET ${setClause} WHERE id_company = ?`;
+
+  console.log("Query gerada:", query);
+  console.log("Valores para a query:", [...values, id]);
+
+  return new Promise((resolve, reject) => {
+    db.query(query, [...values, id], (err, results) => {
+      if (err) {
+        console.error("Erro na query do banco de dados:", err);
+        reject(err); // Certifique-se de que rejeições sejam tratadas no controlador
+      } else {
+        console.log("Resultados da query:", results);
+        resolve(results);
+      }
+    });
+  });
+};
+
 export const deleteCompany = async (companyId) => {
-  const query = "DELETE FROM tb_company WHERE id_company = ?"
+  const query = "DELETE FROM tb_company WHERE id_company = ?";
 
   try {
     const [result] = await db.query(query, [companyId]);
@@ -121,7 +144,7 @@ export const deleteCompany = async (companyId) => {
   } catch (error) {
     throw new Error("Erro ao deletar empresa.");
   }
-}
+};
 
 export const compByMonth = async (month) => {
   const query = `SELECT 
@@ -136,9 +159,9 @@ export const compByMonth = async (month) => {
     JOIN tb_city ci ON c.cd_id_city = ci.id_city
     JOIN tb_segment s ON c.cd_id_segment = s.id_segment
     JOIN tb_comp_or_cond ec ON c.cd_comp_or_cond = ec.id_comp_or_cond
-    WHERE c.ds_month_validity = ?`
+    WHERE c.ds_month_validity = ?`;
 
-  const [rows] = await db.query(query, [month])
+  const [rows] = await db.query(query, [month]);
 
-  return rows
-}
+  return rows;
+};
