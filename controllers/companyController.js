@@ -1,4 +1,4 @@
-import { createCompany, updateCompany, updateCompanyTab, findByField, deleteCompany, compByMonth } from "../models/companyModel.js";
+import { createCompany, updateCompany, findByField, deleteCompany, compByMonth } from "../models/companyModel.js";
 
 export const findByFieldCt = async (req, res) => {
   const { name, cnpj } = req.query;
@@ -45,48 +45,6 @@ export const updateCompanyCt = async (req, res) => {
     res.status(500).json({ error: "Erro ao atualizar empresa." });
   }
 };
-
-export const updateSingleAttribute = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { field, value } = req.body;
-
-    console.log("Dados recebidos para atualização:", { id, field, value });
-
-    // Validação do campo
-    const validFields = [
-      "nm_comp_name",
-      "cd_cnpj",
-      "dt_registered",
-      "nm_neighborhood",
-      "cd_id_user",
-      "cd_id_segment",
-      "cd_id_city",
-      "cd_comp_or_cond",
-    ];
-
-    if (!validFields.includes(field)) {
-      console.log("Campo inválido:", field);
-      return res.status(400).json({ message: "Campo inválido." });
-    }
-
-    if (field === "cd_id_city" && isNaN(value)) {
-      console.log("Valor inválido para cidade:", value);
-      return res.status(400).json({ message: "O valor da cidade deve ser um número válido (ID)." });
-    }
-
-    // Atualização no banco
-    const updates = { [field]: value };
-    const result = await updateCompanyTab(id, updates);
-
-    console.log("Resultado da atualização no banco:", result);
-    res.status(200).json({ message: "Campo atualizado com sucesso." });
-  } catch (error) {
-    console.error("Erro no controlador:", error);
-    res.status(500).json({ message: "Erro ao atualizar o campo." });
-  }
-};
-
 
 export const deleteCompanyCt = async (req, res) => {
   const { id_company } = req.query

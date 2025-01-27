@@ -7,7 +7,7 @@ export const findByField = async (field, value) => {
 };
 
 export const createCompany = async (companyData) => {
-  const { compCond, fantasyName, cnpj, segment, city, monthValidity, userId } =
+  const { compCond, fantasyName, neighborhood, cnpj, segment, city, monthValidity, userId } =
     companyData;
   const dtRegistered = new Date().toISOString().slice(0, 19).replace("T", " ");
 
@@ -30,12 +30,13 @@ export const createCompany = async (companyData) => {
     }
 
     const [result] = await db.query(
-      `INSERT INTO tb_company (nm_comp_name, cd_cnpj, dt_registered, cd_id_user, cd_id_segment, cd_id_city, cd_comp_or_cond, ds_month_validity) 
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO tb_company (nm_comp_name, cd_cnpj, dt_registered, nm_neighborhood, cd_id_user, cd_id_segment, cd_id_city, cd_comp_or_cond, ds_month_validity) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         fantasyName,
         cnpj,
         dtRegistered,
+        neighborhood,
         userId,
         segment,
         city,
@@ -112,29 +113,6 @@ export const updateCompany = async (companyId, companyData) => {
   }
 };
 
-export const updateCompanyTab = async (id, updates) => {
-  const fields = Object.keys(updates);
-  const values = Object.values(updates);
-
-  const setClause = fields.map((field) => `${field} = ?`).join(", ");
-  const query = `UPDATE tb_company SET ${setClause} WHERE id_company = ?`;
-
-  console.log("Query gerada:", query);
-  console.log("Valores para a query:", [...values, id]);
-
-  return new Promise((resolve, reject) => {
-    db.query(query, [...values, id], (err, results) => {
-      if (err) {
-        console.error("Erro na query do banco de dados:", err);
-        reject(err); // Certifique-se de que rejeições sejam tratadas no controlador
-      } else {
-        console.log("Resultados da query:", results);
-        resolve(results);
-      }
-    });
-  });
-};
-
 export const deleteCompany = async (companyId) => {
   const query = "DELETE FROM tb_company WHERE id_company = ?";
 
@@ -154,6 +132,7 @@ export const compByMonth = async (month) => {
       ci.sg_city, 
       s.nm_segment, 
       ec.nm_comp_or_cond,
+      c.nm_neighborhood,
       c.ds_month_validity 
     FROM tb_company c
     JOIN tb_city ci ON c.cd_id_city = ci.id_city
@@ -165,3 +144,4 @@ export const compByMonth = async (month) => {
 
   return rows;
 };
+
