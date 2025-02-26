@@ -14,7 +14,10 @@ import https from 'https'
 const PORT = 3000
 const app = express()
 
-app.use(cors());
+app.use(cors({
+  origin: "https://sstorm-doctors.netlify.app",
+  credentials: true
+}));
 
 app.use(express.json())
 
