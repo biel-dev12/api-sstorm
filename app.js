@@ -15,7 +15,7 @@ const PORT = 3000
 const app = express()
 
 app.use(cors({
-  origin: "https://sstorm-doctors.netlify.app",
+  origin: ["https://sstorm-doctors.netlify.app", "http://localhost:5173"],
   credentials: true
 }));
 
@@ -29,7 +29,7 @@ app.use("/", companyRoutes)
 app.use("/", cityRoutes)
 app.use("/", typeServiceRoutes)
 app.use("/", techRoutes)
-app.use("/api/pgr", pgrRoutes)
+app.use("/pgr", pgrRoutes)
 
 const cert = fs.readFileSync('./config/mkcert/192.168.1.55.pem')
 const key = fs.readFileSync('./config/mkcert/192.168.1.55-key.pem')

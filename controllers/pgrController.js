@@ -1,4 +1,4 @@
-import { updatePgrData } from "../models/pgrModel.js";
+import { updatePgrData, getPgrByCompany } from "../models/pgrModel.js";
 
 export const updatePgrCt = async (req, res) => {
   const { idPgr, cd_company_id } = req.params; // Obtém os IDs da URL
@@ -21,3 +21,19 @@ export const updatePgrCt = async (req, res) => {
     return res.status(500).json({ error: "Erro ao atualizar os dados do PGR." });
   }
 };
+
+export const getPgrByCompanyCt = async (req, res) => {
+  try {
+    const { companyId } = req.params;
+    const pgrData = await getPgrByCompany(companyId);
+
+    if (!pgrData.length) {
+      return res.status(404).json({ error: "Nenhum dado de PGR encontrado" });
+    }
+
+    res.status(200).json(pgrData);
+  } catch (error) {
+    console.error("Erro ao buscar PGR:", error);
+    res.status(500).json({ error: "Erro ao buscar PGR" });
+  }
+}

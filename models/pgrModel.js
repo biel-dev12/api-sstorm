@@ -49,3 +49,9 @@ export const updatePgrData = async (idPgr, cd_company_id, data) => {
     throw new Error("Erro ao atualizar os dados do PGR.");
   }
 };
+
+export const getPgrByCompany = async (companyId) => {
+  const query = `SELECT * FROM tb_pgr_pcmso WHERE cd_id_company_doc = ?`;
+  const [rows] = await db.query(query, [companyId]);
+  return rows;
+}
