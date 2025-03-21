@@ -28,7 +28,7 @@ export const getPgrByCompanyCt = async (req, res) => {
     const pgrData = await getPgrByCompany(companyId);
 
     if (!pgrData.length) {
-      return res.status(404).json({ error: "Nenhum dado de PGR encontrado" });
+      return res.status(200).json([]);
     }
 
     res.status(200).json(pgrData);

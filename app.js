@@ -15,7 +15,7 @@ const PORT = 3000
 const app = express()
 
 app.use(cors({
-  origin: ["https://sstorm-doctors.netlify.app", "http://localhost:5173"],
+  origin: ["https://sstorm-doctors.netlify.app", "http://localhost:5174"],
   credentials: true
 }));
 

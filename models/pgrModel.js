@@ -22,6 +22,7 @@ export const updatePgrData = async (idPgr, cd_company_id, data) => {
       WHERE id_pgr_pcmso = ? AND cd_id_company_doc = ?;
     `;
 
+
     const values = [
       data.dt_release,
       data.dt_contele,
