@@ -1,8 +1,9 @@
 import express from 'express'
-import { getTechCt } from '../controllers/techController.js'
+import { getTechByIdCt, getTechCt } from '../controllers/techController.js'
 
 const router = express.Router()
 
 router.get('/techs', getTechCt)
+router.get('/tech/:id', getTechByIdCt)
 
 export default router
