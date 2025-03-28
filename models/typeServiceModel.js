@@ -5,3 +5,10 @@ export const getTypeService = async () => {
 
     return rows
 }
+
+export const getTypeServiceById = async (idTService) => {
+    const query = "SELECT nm_type_service FROM tb_type_service WHERE id_type_service = ?"
+
+    const [rows] = await db.query(query, [idTService])
+    return rows.length ? rows[0] : null;    
+}
