@@ -1,4 +1,4 @@
-import { updatePgrData, getPgrByCompany } from "../models/pgrModel.js";
+import { updatePgrData, getPgrByCompany, getPgrByMonth } from "../models/pgrModel.js";
 
 export const updatePgrCt = async (req, res) => {
   const { idPgr, cd_company_id } = req.params; // Obtém os IDs da URL
@@ -35,5 +35,16 @@ export const getPgrByCompanyCt = async (req, res) => {
   } catch (error) {
     console.error("Erro ao buscar PGR:", error);
     res.status(500).json({ error: "Erro ao buscar PGR" });
+  }
+}
+
+export const getPgrByMonthCt = async (req, res) => {
+  const {month} = req.params
+
+  try{
+    const data = await getPgrByMonth(month)
+    res.status(200).json(data)
+  } catch (error) {
+    res.status(500).json({ message: "Erro ao buscar PGR", error });
   }
 }
