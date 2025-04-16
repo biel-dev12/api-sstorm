@@ -60,22 +60,28 @@ export const getPgrByMonth = async (month) => {
   try {
     const query = `
         SELECT
-           p.id_pgr_pcmso, p.dt_release, p.dt_contele, p.dt_basic_doc, p.dt_inspection, p.dt_definitive_doc, p.dt_submission_doc, p.ds_type_inspection, p.ds_obs,
-           c.nm_comp_name, c.ds_month_validity, c.nm_neighborhood AS neighb,
+           p.cd_id_company_doc, p.id_pgr_pcmso, p.dt_release, p.dt_contele, p.dt_basic_doc, p.dt_inspection, p.dt_definitive_doc, p.dt_submission_doc, p.ds_type_inspection, p.ds_obs,
+           c.nm_comp_name, c.ds_month_validity, c.cd_cnpj, c.nm_neighborhood AS neighb,
            t1.nm_tec AS resp_contele,
            t2.nm_tec AS resp_basic_doc,
            t3.nm_tec AS resp_inspection,
            t4.nm_tec AS resp_definitive_doc,
            t5.nm_tec AS resp_submission_doc,
-           ct.sg_city
+           tp.nm_type_service,
+           ct.sg_city,
+           coc.nm_comp_or_cond AS comp_cond,
+           s.nm_segment AS segment
         FROM tb_pgr_pcmso p
         JOIN tb_company c ON p.cd_id_company_doc = c.id_company
+        LEFT JOIN tb_type_service tp ON p.cd_id_type_service = tp.id_type_service
         LEFT JOIN tb_tec t1 ON p.cd_id_contele_tec = t1.id_tec
         LEFT JOIN tb_tec t2 ON p.cd_id_bas_doc_tec = t2.id_tec
         LEFT JOIN tb_tec t3 ON p.cd_id_insp_tec = t3.id_tec
         LEFT JOIN tb_tec t4 ON p.cd_id_def_doc_tec = t4.id_tec
         LEFT JOIN tb_tec t5 ON p.cd_id_sub_tec = t5.id_tec
         LEFT JOIN tb_city ct ON c.cd_id_city = ct.id_city
+        LEFT JOIN tb_comp_or_cond coc ON c.cd_comp_or_cond = coc.id_comp_or_cond
+        LEFT JOIN tb_segment s ON c.cd_id_segment = s.id_segment
         WHERE c.ds_month_validity = ?
         ORDER by c.nm_comp_name;
     `;
