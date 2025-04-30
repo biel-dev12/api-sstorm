@@ -8,10 +8,11 @@ import typeServiceRoutes from './routes/typeServiceRoutes.js'
 import techRoutes from "./routes/techRoutes.js"
 import pgrRoutes from "./routes/pgrRoutes.js";
 import cors from 'cors'
-import fs from 'fs'
-import https from 'https'
+// import fs from 'fs'
+// import https from 'https'
 
-const PORT = 3000
+const PORT = process.env.PORT || 3000
+
 const app = express()
 
 app.use(cors({
@@ -31,10 +32,10 @@ app.use("/", typeServiceRoutes)
 app.use("/", techRoutes)
 app.use("/pgr", pgrRoutes)
 
-const cert = fs.readFileSync('./config/mkcert/192.168.1.55.pem')
-const key = fs.readFileSync('./config/mkcert/192.168.1.55-key.pem')
+// const cert = fs.readFileSync('./config/mkcert/192.168.1.55.pem')
+// const key = fs.readFileSync('./config/mkcert/192.168.1.55-key.pem')
 
 // Criar o servidor HTTPS
-https.createServer({ key, cert }, app).listen(PORT, '0.0.0.0', () => {
-    console.log(`Servidor rodando com HTTPS na porta ${PORT}`);
-  });
+app.listen(PORT, () => {
+  console.log(`Servidor rodando na porta ${PORT}`);
+});
